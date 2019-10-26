@@ -50,3 +50,5 @@ export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/dtan
   howpublished = {\url{https://github.com/SkafteNicki/libcpab}},
 }
 ```
+## Known Bugs
+- model.save() currenlty does not work (i.e., saving the trained model weights). We have found a fix for this bug and will implement it when we update the repo to TensorFlow 2.0.
