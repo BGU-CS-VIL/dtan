@@ -30,3 +30,23 @@ Add DTAN to your python path:
 ```
 export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/dtan
 ```
+
+## References
+```
+[1] @article{freifeld2017transformations,
+  title={Transformations Based on Continuous Piecewise-Affine Velocity Fields},
+  author={Freifeld, Oren and Hauberg, Soren and Batmanghelich, Kayhan and Fisher, John W},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2017},
+  publisher={IEEE}
+}
+
+[2] @misc{detlefsen2018,
+  author = {Detlefsen, Nicki S.},
+  title = {libcpab},
+  year = {2018},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/SkafteNicki/libcpab}},
+}
+```
