@@ -1,2 +1,2 @@
 # Diffeomorphic Temporal Alignment Nets
-This is a placeholder for our upcoming code for our NeurIPS 2019 paper, Diffeomorphic Temporal Alignment Nets. We expect to release the code before the conference.
+Repository for our upcoming code for our NeurIPS 2019 paper, Diffeomorphic Temporal Alignment Nets. We are now working on updating the code to TensorFlow 2.0.
