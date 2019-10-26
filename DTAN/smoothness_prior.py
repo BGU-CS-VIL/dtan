@@ -11,10 +11,9 @@ import numpy as np
 
 # From tensorflow
 import tensorflow as tf
-from tensorflow.python.keras import backend as K
 
 # From local files
-from helper.tf_functions import tf_dist_mat, tf_plot_graphs
+from helper.tf_functions import tf_dist_mat
 
 
 """
