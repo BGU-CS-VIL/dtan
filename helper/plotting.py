@@ -32,7 +32,6 @@ def plot_within_class(X, ratio):
 
 def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, dataset_name):
 
-
     #check data dim
     if len(X_aligned_within_class.shape) < 3:
         X_aligned_within_class = np.expand_dims(X_aligned_within_class, axis=-1)
@@ -91,7 +90,7 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         ax2 = f.add_subplot(rows, cols, plot_idx)
         ax2.plot(t, X_mean[:, channel], 'r',label='Average signal')
         ax2.fill_between(t, upper[:, channel], lower[:, channel], color='r', alpha=0.2, label=r"$\pm\sigma$")
-        plt.legend(loc='upper left', fontsize=12, frameon=True)
+        #plt.legend(loc='upper right', fontsize=12, frameon=True)
         plt.xlim(0, signal_len)
 
         if n_channels ==1:
@@ -117,14 +116,14 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         ax4.fill_between(t, upper_t[:, channel], lower_t[:, channel], color='#539caf', alpha=0.6, label=r"$\pm\sigma$")
 
 
-        plt.legend(loc='upper left', fontsize=12, frameon=True)
+        #plt.legend(loc='upper right', fontsize=12, frameon=True)
         plt.title("DTAN average signal", fontsize=title_font)
         plt.xlim(0, signal_len)
         plt.tight_layout()
 
         plot_idx += 1
 
-
+    #plt.savefig(f'{dataset_name}_{int(class_num)}.pdf', format='pdf')
     plt.tight_layout()
     plt.suptitle(f"{dataset_name}: class-{class_num}")
     plt.show()
