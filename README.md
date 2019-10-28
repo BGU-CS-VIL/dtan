@@ -1,5 +1,5 @@
 # Diffeomorphic Temporal Alignment Nets
-Repository for our upcoming code for our <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment Nets](https://www.cs.bgu.ac.il/~orenfr/DTAN/ShapiraWeber_NeurIPS_2019.pdf). We are now working on updating the code to TensorFlow 2.0.
+Repository for our upcoming <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment Nets](https://www.cs.bgu.ac.il/~orenfr/DTAN/ShapiraWeber_NeurIPS_2019.pdf). We are now working on updating the code to TensorFlow 2.0.
 <img src="/figures/dtan_intro_fig.png" alt="DTAN joint alignmnet of ECGFiveDays dataset.">
 
 ## Author of this software
@@ -80,6 +80,7 @@ optional arguments:
 
 ```
 2. Standard alignment trainnig procedure in Keras:
+
 A simple DL training framework for training DTAN (and R-DTAN) for time-series joint alignment in Keras.
 ```
 /models/train_model.py
