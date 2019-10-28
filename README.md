@@ -21,7 +21,7 @@ For instance:
 conda create -n dtan python=3.6 numpy matplotlib scipy
 ```
 ### libcpab
-licpab is a python package supporting the CPAB transformations in Numpy, Tensorflow and Pytorch.
+licpab [2] is a python package supporting the CPAB transformations [1] in Numpy, Tensorflow and Pytorch.
 
 Install [libcpab](https://github.com/SkafteNicki/libcpab) (Note: you might have to recompile the dynamic libraries under /libcpab/tensorflow/.):
 ```
@@ -48,6 +48,38 @@ Try the example code under dtan/exmaples (see also our Usage section below):
 ```
 python UCR_alignment.py
 ```
+## Usage
+### Examples
+Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
+1. UCR time-series classification archive [3] alignment example.
+To run simply enter:
+```
+python UCR_alignment.py
+```
+Note that here we only provide one dataset from the UCR archive - ECGFiveDays. 
+For the entire archive, please visit:
+[https://www.cs.ucr.edu/~eamonn/time_series_data/](https://www.cs.ucr.edu/~eamonn/time_series_data/)
+
+The script supports the following flags:
+```
+optional arguments:
+  -h, --help            show this help message and exit
+  --tess_size TESS_SIZE
+                        CPA velocity field partition
+  --smoothness_prior    smoothness prior flag
+  --no_smoothness_prior
+                        no smoothness prior flag
+  --lambda_smooth LAMBDA_SMOOTH
+                        lambda_smooth, larger values -> smoother warps
+  --lambda_var LAMBDA_VAR
+                        lambda_var, larger values -> larger warps
+  --n_recurrences N_RECURRENCES
+                        number of recurrences of R-DTAN
+  --zero_boundary ZERO_BOUNDARY
+                        zero boundary constrain
+
+```
+
 ## References
 ```
 [1] @article{freifeld2017transformations,
@@ -65,6 +97,13 @@ python UCR_alignment.py
   publisher = {GitHub},
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/SkafteNicki/libcpab}},
+}
+[3] @misc{UCRArchive,
+title={The UCR Time Series Classification Archive},
+author={ Chen, Yanping and Keogh, Eamonn and Hu, Bing and Begum, Nurjahan and Bagnall, Anthony and Mueen, Abdullah and Batista, Gustavo},
+year={2015},
+month={July},
+note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
 }
 ```
 ## Known Bugs
