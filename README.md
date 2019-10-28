@@ -23,7 +23,7 @@ conda create -n dtan python=3.6 numpy matplotlib scipy
 ### libcpab
 licpab is a python package supporting the CPAB transformations in Numpy, Tensorflow and Pytorch.
 
-Install [libcpab](https://github.com/SkafteNicki/libcpab):
+Install [libcpab](https://github.com/SkafteNicki/libcpab) (Note: you might have to recompile the dynamic libraries under /libcpab/tensorflow/.):
 ```
 git clone https://github.com/SkafteNicki/libcpab
 ```
