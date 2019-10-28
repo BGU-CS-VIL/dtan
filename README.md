@@ -15,6 +15,14 @@ Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 Operation system: we currenly only support Linux oprating system.
 
 ## Installation
+We recommend installing a [virtual environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) via Anaconda.
+For instance:
+```
+conda create -n dtan python=3.6 numpy matplotlib scipy
+```
+### libcpab
+licpab is a python package supporting the CPAB transformations in Numpy, Tensorflow and Pytorch.
+
 Install [libcpab](https://github.com/SkafteNicki/libcpab):
 ```
 git clone https://github.com/SkafteNicki/libcpab
@@ -23,6 +31,11 @@ Add libcpab to your python path:
 ```
 export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/libcpab
 ```
+Make sure libcpab was installed properly. Run one of the demos:
+```
+python tensorflow_demo1.py
+```
+### DTAN
 Clone the repository:
 ```
 git clone https://github.com/BGU-CS-VIL/dtan.git
@@ -31,7 +44,10 @@ Add DTAN to your python path:
 ```
 export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/dtan
 ```
-
+Try the example code under dtan/exmaples (see also our Usage section below):
+```
+python UCR_alignment.py
+```
 ## References
 ```
 [1] @article{freifeld2017transformations,
