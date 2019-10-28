@@ -79,7 +79,11 @@ optional arguments:
                         zero boundary constrain
 
 ```
-
+2. Standard alignment trainnig procedure in Keras:
+A simple DL training framework for training DTAN (and R-DTAN) for time-series joint alignment in Keras.
+```
+/models/train_model.py
+```
 ## References
 ```
 [1] @article{freifeld2017transformations,
