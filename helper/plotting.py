@@ -6,6 +6,7 @@ author: ronsha
 
 import numpy as np
 import matplotlib.pyplot as plt
+from helper.plot_transformer_layer import animate_all_layers_within_class
 
 
 def plot_within_class(X, ratio):
@@ -155,4 +156,14 @@ def plot_signals(X, X_aligned, y, ratio=[6,4], dataset_name=""):
 
         # plot aligned and misaligned mean signal
         plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, dataset_name)
+
+def RDTAN_animation(DTAN, X_test, y_test, n_recurrences):
+    class_names = np.unique(y_test) # assume numerical labels
+
+    for class_num in class_names:
+        # get signals from each class and compute mean
+        class_num = int(class_num)
+        test_class_idx = y_test == class_num
+        X_within_class = X_test[test_class_idx]
+        animate_all_layers_within_class(DTAN, X_within_class, n_recurrences, name=f"RDTAN{n_recurrences}-class{class_num}.gif")
 
