@@ -20,9 +20,8 @@ from tensorflow.keras import backend as K
 
 # From helper
 from helper.util import get_dataset_info
-from helper.plotting import plot_signals
+from helper.plotting import plot_signals, RDTAN_animation
 from helper.UCR_loader import load_UCR_data
-
 # models
 from models.train_model import run_alignment_network
 
@@ -52,14 +51,12 @@ if __name__ == "__main__":
     datadir = "data/"
     dataset_name = "ECGFiveDays"
 
-
     X_train, X_test, y_train, y_test = load_UCR_data(datadir, dataset_name)
-    print("y_train.shape", y_train.shape)
     # Data info
     input_shape, n_classes = get_dataset_info(dataset_name, X_train, X_test, y_train, y_test, print_info=True)
 
     # args
-    plot_signals_flag = True
+    plot_signals_flag = False
     # run network - args holds all training related parameters
     DTAN = run_alignment_network(X_train, y_train, args)
 
@@ -70,7 +67,18 @@ if __name__ == "__main__":
     X_train_aligned = np.squeeze(DTAN_aligner([X_train]))
     X_test_aligned = np.squeeze(DTAN_aligner([X_test]))
 
-    # plot results
+
+    # plot output at each recurrence.
+    # model: *trained* DTAN model
+
+    #DTAN.plot_RDTAN_outputs(DTAN, X_train, y_train, ratio=[6,4])
+    # Create animation, saves as gif
+    #RDTAN_animation(DTAN, X_test, y_test, args.n_recurrences)
+
+    # plot results - similar format to Figure 1 in [1]
     if plot_signals_flag:
         # Plot test data
         plot_signals(X_test, X_test_aligned, y_test, ratio=[10,6], dataset_name=dataset_name)
+
+    # References:
+    # [1] - Diffeomorphic Temporal Alignment Nets (NeurIPS 2013)

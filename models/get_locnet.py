@@ -36,7 +36,7 @@ def get_locnet(locnet_inputs, output_shape):
     locnet_outputs = Dense(output_shape, activation='tanh')(x1)
 
     # Define model
-    locnet = Model(inputs=locnet_inputs, outputs=locnet_outputs)
+    locnet = Model(inputs=locnet_inputs, outputs=locnet_outputs, name="Localization Network")
 
     return locnet
 
