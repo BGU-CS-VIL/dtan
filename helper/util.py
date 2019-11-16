@@ -31,4 +31,3 @@ def print_model_details(locnet, model):
     print(locnet.summary())
     print("\nFull Network Summary:")
     print(model.summary())
-

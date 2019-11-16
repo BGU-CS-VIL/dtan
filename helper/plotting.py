@@ -157,7 +157,7 @@ def plot_signals(X, X_aligned, y, ratio=[6,4], dataset_name=""):
         # plot aligned and misaligned mean signal
         plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, dataset_name)
 
-def RDTAN_animation(DTAN, X_test, y_test, n_recurrences):
+def RDTAN_animation(DTAN, X_test, y_test, n_recurrences, args):
     class_names = np.unique(y_test) # assume numerical labels
 
     for class_num in class_names:
@@ -165,5 +165,10 @@ def RDTAN_animation(DTAN, X_test, y_test, n_recurrences):
         class_num = int(class_num)
         test_class_idx = y_test == class_num
         X_within_class = X_test[test_class_idx]
-        animate_all_layers_within_class(DTAN, X_within_class, n_recurrences, name=f"RDTAN{n_recurrences}-class{class_num}.gif")
+        # Name
+        if args.smoothness_prior:
+            name = f"RDTAN{n_recurrences}-lv-{args.lambda_var}-ls-{args.lambda_smooth}-class{class_num}.gif"
+        else:
+            name = f"RDTAN{n_recurrences}-no-prior-class{class_num}.gif"
+        animate_all_layers_within_class(DTAN, X_within_class, n_recurrences, args, fname=name)
 

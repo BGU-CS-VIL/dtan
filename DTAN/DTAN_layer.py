@@ -9,7 +9,7 @@ Created on Oct 2019
 import tensorflow as tf
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.engine.base_layer import Layer
-
+import numpy as np
 # DTAN
 from models.get_locnet import get_locnet
 from DTAN.smoothness_prior import smoothness_norm
@@ -17,7 +17,8 @@ from helper.plot_transformer_layer import plot_all_layers
 # licpab
 from libcpab.tensorflow import cpab
 
-
+#
+import matplotlib.pyplot as plt
 #%%
 class DTAN_model():
     '''
@@ -120,6 +121,16 @@ class DTAN_model():
         :return:
         '''
         plot_all_layers(model, X, y, self.n_recurrences, ratio, name)
+
+#    def plot_vector_field(self, X):
+ #       theta = np.squeeze(self.DTANs[-1].get_theta(X))
+        nb_points = 1000
+        #points = self.T.uniform_meshgrid([nb_points for i in range(self.T._ndim)])
+  #      self.T.visualize_vectorfield(theta, nb_points=100)
+        #vector_field = self.T.calc_vectorfield(points, theta)
+        #plt.plot(vector_field)
+        #plt.title("Vector Field")
+        #plt.show()
 
 
 class DTANLayer(Layer):

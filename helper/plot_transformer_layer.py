@@ -72,7 +72,7 @@ def plot_all_layers(model, X, y, n_recurrences, ratio):
     plt.show()
 
 
-def animate_all_layers_within_class(model, X_within_class, n_recurrences, ratio=[6,4], name="movie.gif"):
+def animate_all_layers_within_class(model, X_within_class, n_recurrences, args, ratio=[6,4], fname="movie.gif"):
 
     plt.style.use('seaborn-darkgrid')
 
@@ -118,12 +118,16 @@ def animate_all_layers_within_class(model, X_within_class, n_recurrences, ratio=
             # Plot
                 signals[j].set_ydata(np.squeeze(X_within_class_aligned[j]))
             mean_signal.set_ydata(X_mean_aligned.T)
-            plt.title(f"RDTAN{int(i)}", fontsize=16)
+            if args.smoothness_prior:
+                plt.title(r"RDTAN%i$(\lambda_{var}=%.2f$, $\lambda_{smooth}=%.2f)$"%(i, args.lambda_var, args.lambda_smooth), fontsize=16)
+            else:
+                plt.title("RDTAN%i - No Smoothness Prior"%i, fontsize=16)
         return signals, mean_signal
 
 
 
     ani = animation.FuncAnimation(
     fig, run, init_func=init, frames=n_recurrences+1, interval=2, blit=False, repeat_delay=500)
-    ani.save(name, writer='imagemagick', fps=2)
-    plt.show()
+    ani.save(fname, writer='imagemagick', fps=2)
+    plt.close()
+    #plt.show()

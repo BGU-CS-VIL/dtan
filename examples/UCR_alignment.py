@@ -2,8 +2,20 @@
 Created on Oct  2019
 
 author: ronsha
-"""
 
+End-to-end alignment of datasets belonging to the UCR archive.
+If you call 'run_UCR_alignment(...)' from another scripts, make sure to construct and pass an args class.
+You can see "UCR_NCC.py" for example.
+
+Plotting:
+By default, the script will produce figures for each class in a similar fashion to figure 1. from [1].
+You disable it via 'plot_signals_flag'.
+In addition, you can:
+1. Plot the output of RDTAN at each recurrence
+2. Create an animation of RDTAN at each recurrence.
+
+This is possible by simply uncommenting the relevant lines.
+"""
 import os
 import sys
 module_path = os.path.abspath(os.path.join('..'))
@@ -42,43 +54,54 @@ def argparser():
                         help="number of recurrences of R-DTAN")
     parser.add_argument('--zero_boundary', type=bool, default=True,
                         help="zero boundary constrain")
+    parser.add_argument('--n_epochs', type=int, default=1000,
+                        help="number of epochs")
     args = parser.parse_args()
     return args
 
-if __name__ == "__main__":
-    args = argparser()
-    # data
-    datadir = "data/"
-    dataset_name = "ECGFiveDays"
+def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
 
+    # Print args
+    print(args)
+
+    # Data
+    datadir = "data/"
     X_train, X_test, y_train, y_test = load_UCR_data(datadir, dataset_name)
     # Data info
     input_shape, n_classes = get_dataset_info(dataset_name, X_train, X_test, y_train, y_test, print_info=True)
 
-    # args
-    plot_signals_flag = False
+    # Plotting flag
+    plot_signals_flag = True
+
     # run network - args holds all training related parameters
-    DTAN = run_alignment_network(X_train, y_train, args)
+    model, DTAN = run_alignment_network(X_train, y_train, args)
 
     # Align data - forward pass the data through the network
     # create transformer function
-    DTAN_aligner = K.function(inputs=[DTAN.input], outputs=[DTAN.layers[-1].output])
+    DTAN_aligner = K.function(inputs=[model.input], outputs=[model.layers[-1].output])
 
-    X_train_aligned = np.squeeze(DTAN_aligner([X_train]))
+    #X_train_aligned = np.squeeze(DTAN_aligner([X_train]))
     X_test_aligned = np.squeeze(DTAN_aligner([X_test]))
-
-
-    # plot output at each recurrence.
-    # model: *trained* DTAN model
-
-    #DTAN.plot_RDTAN_outputs(DTAN, X_train, y_train, ratio=[6,4])
-    # Create animation, saves as gif
-    #RDTAN_animation(DTAN, X_test, y_test, args.n_recurrences)
 
     # plot results - similar format to Figure 1 in [1]
     if plot_signals_flag:
         # Plot test data
         plot_signals(X_test, X_test_aligned, y_test, ratio=[10,6], dataset_name=dataset_name)
 
-    # References:
-    # [1] - Diffeomorphic Temporal Alignment Nets (NeurIPS 2013)
+    ### Plot RDTAN - comment out for usage ###
+
+    # Plot output at each recurrence
+    #DTAN.plot_RDTAN_outputs(DTAN, X_train, y_train, ratio=[6,4])
+
+    # Create animation, saves as gif in this script's dir
+    #RDTAN_animation(DTAN, X_test, y_test, args.n_recurrences, args)
+
+if __name__ == "__main__":
+    args = argparser()
+    run_UCR_alignment(args)
+
+
+
+
+# References:
+# [1] - Diffeomorphic Temporal Alignment Nets (NeurIPS 2019)

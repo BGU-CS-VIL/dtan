@@ -11,9 +11,9 @@ from tensorflow.python.keras.layers import Dense, Activation, BatchNormalization
 # Localization Network template:
 def get_locnet(locnet_inputs, output_shape):
     # Define filters
-    c1 = 64
-    c2 = 32
-    c3 = 32
+    c1 = 128
+    c2 = 64
+    c3 = 64
 
     # CNN
     inputs = locnet_inputs

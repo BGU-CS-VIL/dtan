@@ -13,8 +13,6 @@ from tensorflow.python import keras
 # From local files
 from DTAN.DTAN_layer import DTAN_model
 from DTAN.alignmnet_loss import alignment_loss
-from helper.plot_transformer_layer import animate_all_layers_within_class
-import numpy as np
 
 
 def run_alignment_network(X_train ,y_train, args):
@@ -55,11 +53,11 @@ def run_alignment_network(X_train ,y_train, args):
         callbacks.append(best_val_loss)
 
     history = model.fit(X_train ,y_train,
-                        validation_split=0.2,
+                        validation_split=0.1,
                         batch_size=64,
-                        epochs=1000,
+                        epochs=args.n_epochs,
                         callbacks = callbacks,
                         verbose=1)
 
 
-    return model
+    return model, DTAN
