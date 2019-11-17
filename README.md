@@ -85,6 +85,16 @@ A simple DL training framework for training DTAN (and R-DTAN) for time-series jo
 ```
 /models/train_model.py
 ```
+3. UCR Nearest Centroid Classification (NCC):
+
+Here we provide an end-to-end pipeline for the NCC experiment described in our paper.
+The script uses the same hyper-paramters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
+To run the pipeline on the 'ECGFiveDays' dataset go to the 'examples' dir and simply run: 
+
+```
+python UCR_NCC.py
+```
+You can change the dataset inside the script.
 ## References
 ```
 [1] @article{freifeld2017transformations,
