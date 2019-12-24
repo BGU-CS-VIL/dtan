@@ -129,11 +129,12 @@ note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
 ## License
 This software is released under the MIT License (included with the software). Note, however, that if you are using this code (and/or the results of running it) to support any form of publication (e.g., a book, a journal paper, a conference paper, a patent application, etc.) then we request you will cite our paper:
 ```
-@inproceedings{Shapira:NeruIPS:2019:DTAN,
-  title = {Diffeomorphic Temporal Alignment Nets},
-  author = {Ron Shapira Weber and Matan Eyal and Nicki Skafte Detlefsen and Oren Shriki and Oren Freifeld},
-  booktitle = {NeurIPS},
+@inproceedings{weber2019diffeomorphic,
+  title={Diffeomorphic Temporal Alignment Nets},
+  author={Weber, Ron A Shapira and Eyal, Matan and Skafte, Nicki and Shriki, Oren and Freifeld, Oren},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={6570--6581},
   year={2019}
- } 
+}
 
 ```
