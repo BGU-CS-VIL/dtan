@@ -1,4 +1,4 @@
-# Diffeomorphic Temporal Alignment Nets
+# Diffeomorphic Temporal Alignment Nets - PyTorch (Beta!)
 Repository for our upcoming <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment Nets](https://www.cs.bgu.ac.il/~orenfr/DTAN/ShapiraWeber_NeurIPS_2019.pdf) co-authored by: Ron Shapira Weber, Matan Eyal, Nicki Skafte Detlefsen, Oren Shriki and Oren Freifeld. We are now working on updating the code to TensorFlow 2.0.
 <img src="/figures/dtan_intro_fig.png" alt="DTAN joint alignmnet of ECGFiveDays dataset.">
 ## Model Architecture
@@ -9,10 +9,10 @@ Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 
 ## Requirements
 - Standard Python(3.6) packages: numpy, matplotlib, scipy
-- tensorflow==1.11 (keras should be included)
+- PyTorch==1.4
 - tslean==0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
-- libcpab==1.4
-- For Nvidia GPU iimplementation: CUDA==9.0 + appropriate cuDNN as well as tensorflow-gpu. You can follow the instructions [here](https://www.tensorflow.org/install).
+- libcpab==2.0
+- For Nvidia GPU iimplementation: CUDA==11.0 + appropriate cuDNN as well. You can follow the instructions [here](https://pytorch.org/get-started/locally/).
 
 Operation system: we currenly only support Linux oprating system.
 
@@ -27,19 +27,15 @@ licpab [2] is a python package supporting the CPAB transformations [1] in Numpy,
 
 Install [libcpab]:(https://github.com/SkafteNicki/libcpab) <br>
 Note 1: you might have to recompile the dynamic libraries under /libcpab/tensorflow/ <br>
-Note 2: We currently supprot the 1.4v branch
 ```
 git clone https://github.com/SkafteNicki/libcpab
-git checkout version1.4
 ```
 Add libcpab to your python path:
 ```
 export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/libcpab
 ```
-Make sure libcpab was installed properly. Run one of the demos:
-```
-python tensorflow_demo1.py
-```
+Make sure libcpab was installed properly (Run one of the demos).
+
 ### DTAN
 Clone the repository:
 ```
@@ -82,6 +78,10 @@ optional arguments:
                         number of recurrences of R-DTAN
   --zero_boundary ZERO_BOUNDARY
                         zero boundary constrain
+  --n_epochs N_EPOCHS   number of epochs
+  --batch_size BATCH_SIZE
+                        batch size
+  --lr LR               learning rate
 
 ```
 2. Standard alignment trainnig procedure in Keras:
@@ -126,8 +126,8 @@ month={July},
 note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
 }
 ```
-## Known Bugs
-- model.save() currenlty does not work (i.e., saving the trained model weights). We have found a fix for this bug and will implement it when we update the repo to TensorFlow 2.0.
+## Versions:
+
 
 ## License
 This software is released under the MIT License (included with the software). Note, however, that if you are using this code (and/or the results of running it) to support any form of publication (e.g., a book, a journal paper, a conference paper, a patent application, etc.) then we request you will cite our paper:
