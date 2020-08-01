@@ -1,169 +1,110 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Oct 2019
+Created on Oct  2019
 
-@author: ronsha
+author: ronsha
 """
-# Tensorflow / Keras
-import tensorflow as tf
-from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.engine.base_layer import Layer
-import numpy as np
-# DTAN
-from models.get_locnet import get_locnet
-from DTAN.smoothness_prior import smoothness_norm
-from helper.plot_transformer_layer import plot_all_layers
-# licpab
-from libcpab.tensorflow import cpab
+import torch
+import torch.nn as nn
+from libcpab import Cpab
 
-#
-import matplotlib.pyplot as plt
-#%%
-class DTAN_model():
+
+def get_locnet():
+    # Spatial transformer localization-network
+    locnet = nn.Sequential(
+        nn.Conv1d(1, 128, kernel_size=7),
+        # nn.BatchNorm1d(128),
+        nn.MaxPool1d(3, stride=2),
+        nn.ReLU(True),
+        nn.Conv1d(128, 64, kernel_size=9),
+        # nn.BatchNorm1d(64),
+        nn.MaxPool1d(3, stride=3),
+        nn.ReLU(True),
+        nn.Conv1d(64, 64, kernel_size=3),
+        # nn.BatchNorm1d(),
+        nn.MaxPool1d(3, stride=2),
+        nn.ReLU(True),
+        # GAP (when size=1) -
+        # Note: While GAP allow the model size to remain fix w.r.t input length,
+        # Temporal information is lost by the GAP operator.
+        #nn.AdaptiveAvgPool1d(1),
+    )
+    return locnet
+
+class DTAN(nn.Module):
     '''
-
+    PyTroch nn.Module implementation of Diffeomorphic Temporal Alignment Nets [1]
     '''
-    def __init__(self, inputs, tess_size, smoothness_prior=True, lambda_smooth=0.5, lambda_var=0.1,
-                 n_recurrences=1, zero_boundary=True):
+    def __init__(self, input_shape, channels, tess=[6,], n_recurrence=1, zero_boundary=True, device='gpu'):
         '''
 
-        :param transformer_class:
-        :param localization_net:
+        Args:
+            input_shape (int): signal length
+            channels (int): number of channels
+            tess (list): tessellation shape.
+            n_recurrence (int): Number of recurrences for R-DTAN. Increasing the number of recurrences
+                            Does not increase the number of parameters, but does the trainning time. Default is 1.
+            zero_boundary (bool): Zero boundary (when True) for input X and transformed version X_T,
+                                  sets X[0]=X_T[0] and X[n] = X_T[n]. Default is true.
+            device: 'gpu' or 'cpu'
         '''
-        # Keras input layer
-        self.inputs = inputs
-        # Create CPAB transformer
-        self.T = cpab(tess_size=[tess_size, ], return_tf_tensors=True, zero_boundary=zero_boundary)
+        super(DTAN, self).__init__()
 
-        # thetha dim
-        self.d = self.T.get_theta_dim()
-        # Smoothness prior
-        self.smoothness_prior = smoothness_prior
-        self.lambda_var = lambda_var
-        self.lambda_smooth = lambda_smooth
+        # init CPAB transformer
+        self.T = Cpab(tess, backend='pytorch', device=device, zero_boundary=zero_boundary, volume_perservation=False)
+        self.dim = self.T.get_theta_dim()
+        self.n_recurrence = n_recurrence
+        self.input_shape = input_shape # signal len
+        self.channels = channels
+        self.localization = get_locnet()
+        self.fc_input_dim = self.get_conv_to_fc_dim()
 
-        # Get (optional: Recurrent) DTAN
-        # DTAN output - Keras output layer -> warpped signal
-        # DTANs - transformer modules
-        # locnets - the same locent (shared weights) of (R-)DTAN
-        self.n_recurrences = n_recurrences
-        self.DTAN_output, self.DTANs, self.locnets = self.get_transformer_module(self.inputs)
+        # Regressor for the 3 * 2 affine matrix
+        self.fc_loc = nn.Sequential(
+            nn.Linear(self.fc_input_dim, 16),
+            nn.ReLU(True),
+            nn.Linear(16, self.dim),
 
-        # Build Model
-        self.DTAN_model = self.build_model()
+            nn.Tanh()
+        )
 
-        if self.smoothness_prior:
-            self.add_smoothness_prior()
+        # Initialize the weights/bias with identity transformation
+        #self.fc_loc[2].weight.data.zero_()
+        self.fc_loc[-2].bias.data.copy_(torch.tensor(self.T.identity(epsilon=0.001).view(-1), dtype=torch.float))
 
+    def get_conv_to_fc_dim(self):
+        rand_tensor = torch.rand([1, self.channels, self.input_shape])
+        out_tensor = self.localization(rand_tensor)
+        conv_to_fc_dim = out_tensor.size(1)*out_tensor.size(2)
+        #print("conv_to_fc_dim",conv_to_fc_dim, "full size", out_tensor.size())
+        return conv_to_fc_dim
 
-    def build_model(self):
-        '''
-        Builds Keras model
-        :return:
-        '''
-        DTAN_model = Model(inputs=self.inputs, outputs=self.DTAN_output, name="DTAN")
-        return DTAN_model
+    # Spatial transformer network forward function
+    def stn(self, x, return_theta=False):
+        xs = self.localization(x)
+        xs = xs.view(-1, self.fc_input_dim)
+        theta = self.fc_loc(xs)
+        x = self.T.transform_data(x, theta, outsize=(self.input_shape,))
+        if not return_theta:
+            return x
+        else:
+            return x, theta
 
-    def get_keras_model(self):
-        return self.DTAN_model
-
-    def get_model_output_layer(self):
-        return self.DTAN_output
-
-    def get_transformer_module(self, inputs):
-        '''
-
-        :param inputs: Keras input layer
-        :param n_stack: number of transformer to stack
-        :param T: cpab transformer
-        :param d: theta dim
-        :return: stacked transformer module
-        '''
-
-        locnets = []
-        DTANS = []
-        for i in range(self.n_recurrences):
-            transformer_name = f"Temporal_Alignment_Layer{i}"
-
-            # shared weights - Create locnet only once
-            if i == 0:
-                locnet = get_locnet(self.inputs, output_shape=self.d)
-                print("##### Localization Network: #####")
-                locnet.summary()
-            DTANS.append(DTANLayer(self.T, locnet, name=transformer_name))
-
-        # connect transformers
-        for i in range(self.n_recurrences):
-            inputs = DTANS[i](inputs)
-
-        outputs = inputs
-
-        return outputs, DTANS, locnets
-
-    def add_smoothness_prior(self):
-    # Add smoothness prior on theta for each recurrence
-        for i in range(self.n_recurrences):
-            if i == 0:
-                theta = self.DTANs[i].get_theta(self.inputs)
+    def forward(self, x, return_theta=False):
+        # transform the input
+        thetas = []
+        for i in range(self.n_recurrence):
+            if not return_theta:
+                x = self.stn(x)
             else:
-                theta = self.DTANs[i].get_theta(self.DTANs[i-1](self.inputs))
+                x, theta = self.stn(x, return_theta)
+                thetas.append(theta)
+        if not return_theta:
+            return x
+        else:
+            return x, thetas
 
-            self.DTAN_model.add_loss(smoothness_norm(self.T, tf.squeeze(theta), self.lambda_smooth, self.lambda_var))
+    def get_basis(self):
+        return self.T
 
-    def plot_RDTAN_outputs(self,model, X, y, ratio=[8,6], name="movie.gif"):
-        '''
-
-        :param model: trained DTAN Keras model
-        :param X:
-        :param p_samples: Bool. Plot samples
-        :param p_mean: bool. plot mean
-        :return:
-        '''
-        plot_all_layers(model, X, y, self.n_recurrences, ratio, name)
-
-#    def plot_vector_field(self, X):
- #       theta = np.squeeze(self.DTANs[-1].get_theta(X))
-        nb_points = 1000
-        #points = self.T.uniform_meshgrid([nb_points for i in range(self.T._ndim)])
-  #      self.T.visualize_vectorfield(theta, nb_points=100)
-        #vector_field = self.T.calc_vectorfield(points, theta)
-        #plt.plot(vector_field)
-        #plt.title("Vector Field")
-        #plt.show()
-
-
-class DTANLayer(Layer):
-    def __init__(self, transformer_class, localization_net, **kwargs): 
-        self.transformer_class = transformer_class 
-        self.locnet = localization_net 
-        super(DTANLayer, self).__init__(**kwargs)
-     
-    def build(self, input_shape): 
-        self.locnet.build(input_shape) 
-        self._trainable_weights = self.locnet.trainable_weights 
-        super(DTANLayer, self).build(input_shape)
-     
-    def compute_output_shape(self, input_shape): 
-        return (None, input_shape[-1],1)
- 
-    def get_config(self): 
-        config = super(DTANLayer, self).get_config()
-        config['localization_net'] = self.locnet 
-        config['transformer_class'] = self.transformer_class 
-        return config 
-
-
-    def call(self, X, mask=None):
-        theta = self.locnet.call(X) 
-        output = self.transformer_class.transform_data(X, theta)
-        return output
-
-    def get_theta(self, X):
-        theta = self.locnet.call(X)
-        return theta
-
-
-#%%
-if __name__ == '__main__':
-    pass
+# References:
+# [1] - Diffeomorphic Temporal Alignment Nets (NeurIPS 2019)

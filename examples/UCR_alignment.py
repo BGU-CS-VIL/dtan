@@ -20,23 +20,18 @@ import os
 import sys
 module_path = os.path.abspath(os.path.join('..'))
 import argparse
+import torch
 
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-# From other libraries
-import numpy as np
-
-# From tensorflow
-from tensorflow.keras import backend as K
-
 # From helper
-from helper.util import get_dataset_info
-from helper.plotting import plot_signals, RDTAN_animation
-from helper.UCR_loader import load_UCR_data
-# models
-from models.train_model import run_alignment_network
+from helper.plotting_torch import plot_signals
+from helper.UCR_loader import get_UCR_data
 
+# from models
+from models.train_utils import ExperimentsManager, DTAN_args
+from models.train_model import train
 
 def argparser():
     parser = argparse.ArgumentParser(description='Process args')
@@ -56,6 +51,10 @@ def argparser():
                         help="zero boundary constrain")
     parser.add_argument('--n_epochs', type=int, default=1000,
                         help="number of epochs")
+    parser.add_argument('--batch_size', type=int, default=64,
+                        help="batch size")
+    parser.add_argument('--lr', type=float, default=0.0001,
+                        help="learning rate")
     args = parser.parse_args()
     return args
 
@@ -66,35 +65,42 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
 
     # Data
     datadir = "data/"
-    X_train, X_test, y_train, y_test = load_UCR_data(datadir, dataset_name)
-    # Data info
-    input_shape, n_classes = get_dataset_info(dataset_name, X_train, X_test, y_train, y_test, print_info=True)
-
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    exp_name = f"{dataset_name}_exp"
     # Plotting flag
     plot_signals_flag = True
 
-    # run network - args holds all training related parameters
-    model, DTAN = run_alignment_network(X_train, y_train, args)
+    # Init an instance of the experiment class. Holds results
+    # and trainning param such as lr, n_epochs etc
+    expManager = ExperimentsManager()
+    expManager.add_experiment(exp_name, n_epochs=args.n_epochs, batch_size=args.batch_size, lr=args.lr, device=device)
+    Experiment = expManager[exp_name]
 
-    # Align data - forward pass the data through the network
-    # create transformer function
-    DTAN_aligner = K.function(inputs=[model.input], outputs=[model.layers[-1].output])
+    # DTAN args
+    DTANargs1 = DTAN_args(tess_size=args.tess_size,
+                          smoothness_prior=args.smoothness_prior,
+                          lambda_smooth=args.lambda_smooth,
+                          lambda_var=args.lambda_var,
+                          n_recurrences=args.n_recurrences,
+                          zero_boundary=True,
+                          )
+    expManager[exp_name].add_DTAN_arg(DTANargs1)
 
-    #X_train_aligned = np.squeeze(DTAN_aligner([X_train]))
-    X_test_aligned = np.squeeze(DTAN_aligner([X_test]))
+    DTANargs = Experiment.get_DTAN_args()
+    train_loader, validation_loader, test_loader = get_UCR_data(datadir,
+                                                                dataset_name=dataset_name,
+                                                                batch_size=Experiment.batch_size)
 
-    # plot results - similar format to Figure 1 in [1]
+
+    # Train model
+    model = train(train_loader, validation_loader, DTANargs, Experiment, print_model=True)
+
+    # Plot aligned signals
     if plot_signals_flag:
         # Plot test data
-        plot_signals(X_test, X_test_aligned, y_test, ratio=[10,6], dataset_name=dataset_name)
+        plot_signals(model, device, datadir, dataset_name)
 
-    ### Plot RDTAN - comment out for usage ###
 
-    # Plot output at each recurrence
-    #DTAN.plot_RDTAN_outputs(DTAN, X_train, y_train, ratio=[6,4])
-
-    # Create animation, saves as gif in this script's dir
-    #RDTAN_animation(DTAN, X_test, y_test, args.n_recurrences, args)
 
 if __name__ == "__main__":
     args = argparser()

@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from helper.plot_transformer_layer import animate_all_layers_within_class
 
-
 def plot_within_class(X, ratio):
     '''
     Simple plotting of the mean signal and 10 random samples within a single class.
