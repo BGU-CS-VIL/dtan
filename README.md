@@ -52,7 +52,7 @@ python UCR_alignment.py
 ## Usage
 ### Examples
 Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
-1. UCR time-series classification archive [3] alignment example.
+1. **UCR time-series classification archive [3] alignment example.**
 To run simply enter:
 ```
 python UCR_alignment.py
@@ -84,14 +84,9 @@ optional arguments:
   --lr LR               learning rate
 
 ```
-2. Standard alignment trainnig procedure in Keras:
 
-A simple DL training framework for training DTAN (and R-DTAN) for time-series joint alignment in Keras.
-```
-/models/train_model.py
-```
-3. UCR Nearest Centroid Classification (NCC):
-
+2. **UCR Nearest Centroid Classification (NCC)**:
+*Coming soon to PyTorch version*<br>
 Here we provide an end-to-end pipeline for the NCC experiment described in our paper.
 The script uses the same hyper-paramters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
 To run the pipeline on the 'ECGFiveDays' dataset go to the 'examples' dir and simply run: 
