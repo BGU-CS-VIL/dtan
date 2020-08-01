@@ -27,7 +27,7 @@ licpab [2] is a python package supporting the CPAB transformations [1] in Numpy,
 
 Install [libcpab]:(https://github.com/SkafteNicki/libcpab) <br>
 Note 1: you might have to recompile the dynamic libraries under /libcpab/tensorflow/ <br>
-Note 2: We currently supprot the 1.4v branch
+Note 2: We currently supprot the 1.4v branch (check out the new PyTorch branch, which suports the latest version of libcpab).
 ```
 git clone https://github.com/SkafteNicki/libcpab
 git checkout version1.4
@@ -127,7 +127,8 @@ note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
 }
 ```
 ## Known Bugs
-- model.save() currenlty does not work (i.e., saving the trained model weights). We have found a fix for this bug and will implement it when we update the repo to TensorFlow 2.0.
+- model.save() currenlty does not work (i.e., saving the trained model weights). <br>
+**Fixed in the PyTorch branch of this repo.**
 
 ## License
 This software is released under the MIT License (included with the software). Note, however, that if you are using this code (and/or the results of running it) to support any form of publication (e.g., a book, a journal paper, a conference paper, a patent application, etc.) then we request you will cite our paper:
