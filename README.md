@@ -40,6 +40,8 @@ Make sure libcpab was installed properly (Run one of the demos).
 Clone the repository:
 ```
 git clone https://github.com/BGU-CS-VIL/dtan.git
+# move to pytorch branch
+git checkout pytorch
 ```
 Add DTAN to your python path:
 ```
