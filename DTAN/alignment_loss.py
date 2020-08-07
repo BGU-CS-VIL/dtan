@@ -1,4 +1,3 @@
-import tensorflow as tf
 from DTAN.smoothness_prior import smoothness_norm
 
 

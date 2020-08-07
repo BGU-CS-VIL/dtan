@@ -63,13 +63,13 @@ class DTAN(nn.Module):
             nn.Linear(self.fc_input_dim, 16),
             nn.ReLU(True),
             nn.Linear(16, self.dim),
-
+            # Tanh constrains theta between -1 and 1
             nn.Tanh()
         )
 
         # Initialize the weights/bias with identity transformation
-        #self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[-2].bias.data.copy_(torch.tensor(self.T.identity(epsilon=0.001).view(-1), dtype=torch.float))
+        self.fc_loc[2].weight.data.zero_()
+        self.fc_loc[-2].bias.data.copy_(torch.clone(self.T.identity(epsilon=0.001).view(-1)))
 
     def get_conv_to_fc_dim(self):
         rand_tensor = torch.rand([1, self.channels, self.input_shape])

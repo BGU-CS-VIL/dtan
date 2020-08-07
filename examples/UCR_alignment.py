@@ -49,7 +49,7 @@ def argparser():
                         help="number of recurrences of R-DTAN")
     parser.add_argument('--zero_boundary', type=bool, default=True,
                         help="zero boundary constrain")
-    parser.add_argument('--n_epochs', type=int, default=1000,
+    parser.add_argument('--n_epochs', type=int, default=500,
                         help="number of epochs")
     parser.add_argument('--batch_size', type=int, default=64,
                         help="batch size")
@@ -59,6 +59,17 @@ def argparser():
     return args
 
 def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
+    """
+    Run an example of the full training pipline for DTAN on a UCR dataset.
+    After training:
+        - The model checkpoint (based on minimal validation loss) at checkpoint dir.
+        - Plots alignment, within class, for train and test set.
+
+    Args:
+        args: described at argparser. args for training, CPAB basis, etc
+        dataset_name: dataset dir name at examples/data
+
+    """
 
     # Print args
     print(args)

@@ -5,7 +5,21 @@ import torch
 from DTAN.DTAN_layer import DTAN
 import numpy as np
 
+
 def train(train_loader, val_loader, DTANargs, Experiment, print_model=False):
+    """
+
+    Args:
+        train_loader: PyTorch data loader for iterating over the train set
+        val_loader: PyTorch data loader for iterating over the validation set
+        DTANargs: DTAN args class, defined at train_utils.py
+        Experiment: Experiemnts class degined at train_utils.py
+        print_model: bool - print DTAN details (#params, architecture, CPAB basis
+
+    Returns:
+        trained DTAN model (nn.module)
+
+    """
 
     # Init DTAN class
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -49,9 +63,21 @@ def train(train_loader, val_loader, DTANargs, Experiment, print_model=False):
     return model
 
 
-
-
 def train_epoch(train_loader, device, optimizer, model, channels, DTANargs):
+    """
+
+    Args:
+        train_loader: PyTorch data loader for iterating over the train set
+        device: device used by the network: 'cuda', 'cpu', 'gpu' (str)
+        optimizer: PyTorch optimizer class
+        model: DTAN model to train (nn.module)
+        channels: number of input channels (int)
+        DTANargs: DTAN args class, defined at train_utils.py
+
+    Returns:
+        train loss (float)
+
+    """
     model.train()
     # CPAB basis, used for smoothness prior computation
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -98,6 +124,14 @@ def test(epoch, test_loader, device, optimizer, model, min_loss, DTANargs):
 
 
 def _save_checkpoint(model, optimizer, test_loss, exp_name=''):
+    """
+
+    Args:
+        model: DTAN model (nn.module)
+        optimizer: PyTorch optimizer class
+        test_loss: float, test loss at time of saving the checkpoint
+        exp_name: file name (str)
+    """
     #print("saving model checkpoint")
     checkpoint = {'model_state_dict': model.state_dict(),
                   'optimizer': optimizer.state_dict(),
