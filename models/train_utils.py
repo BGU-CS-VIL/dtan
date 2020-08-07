@@ -8,7 +8,7 @@ class ExperimentClass():
         self.lr = lr
         self.exp_name = exp_name
         self.device = device
-
+        self.dtan_network = None
 
         self.loss_tracker = {
             "train": self.loss_dict(name="train"),
@@ -63,6 +63,14 @@ class ExperimentClass():
         }
         return loss_dict
 
+    def add_DTAN_model(self, dtan_net):
+        self.dtan_network = dtan_net
+
+    def get_DTAN_model(self):
+        return self.dtan_network
+
+    def __str__(self):
+        return str(self.__dict__)
 
 class ExperimentsManager():
     def __init__(self):
