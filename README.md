@@ -8,24 +8,26 @@ Repository for our <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment 
 Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 
 ## Requirements
-- Standard Python(3.6) packages: numpy, matplotlib, scipy
-- PyTorch==1.4
-- tslean==0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
-- libcpab==2.0
+- Standard Python(>=3.6) packages: numpy, matplotlib, tqdm, seaborn
+- PyTorch >= 1.4
+- tslean == 0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
+- libcpab == 2.0
 - For Nvidia GPU iimplementation: CUDA==11.0 + appropriate cuDNN as well. You can follow the instructions [here](https://pytorch.org/get-started/locally/).
 
-Operation system: we currenly only support Linux oprating system.
+## Operation system: 
+For the native PyTorch implementation (slower), we support all operating system. 
+For the fast CUDA implementation of libcpab, we only support Linux.
 
 ## Installation
 We recommend installing a [virtual environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) via Anaconda.
 For instance:
 ```
-conda create -n dtan python=3.6 numpy matplotlib scipy
+conda create -n dtan python=3.7 numpy matplotlib seaborn tqdm
 ```
 ### libcpab
 licpab [2] is a python package supporting the CPAB transformations [1] in Numpy, Tensorflow and Pytorch.
 
-Install [libcpab]:(https://github.com/SkafteNicki/libcpab) <br>
+Install [libcpab](https://github.com/SkafteNicki/libcpab) <br>
 Note 1: you might have to recompile the dynamic libraries under /libcpab/tensorflow/ <br>
 ```
 git clone https://github.com/SkafteNicki/libcpab
@@ -54,7 +56,7 @@ python UCR_alignment.py
 ## Usage
 ### Examples
 Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
-1. **UCR time-series classification archive [3] alignment example.**
+1. **UCR time-series classification archive [3] alignment example.** <br>
 To run simply enter:
 ```
 python UCR_alignment.py
@@ -87,10 +89,13 @@ optional arguments:
 
 ```
 
-2. **UCR Nearest Centroid Classification (NCC)**:
+2. **Usage Example - Running with and without smoothness prior**
+See the jupyter notebook, illustrating the importance of the smoothness prior. 
+
+3. **UCR Nearest Centroid Classification (NCC)**:
 *Coming soon to PyTorch version*<br>
 Here we provide an end-to-end pipeline for the NCC experiment described in our paper.
-The script uses the same hyper-paramters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
+The script uses the same hyper-parameters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
 To run the pipeline on the 'ECGFiveDays' dataset go to the 'examples' dir and simply run: 
 
 ```
