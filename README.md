@@ -89,8 +89,8 @@ optional arguments:
 
 ```
 
-2. **Usage Example - Running with and without smoothness prior**
-See the jupyter notebook, illustrating the importance of the smoothness prior. 
+2. **Usage Example - Running with and without smoothness prior**:<br>
+See the [jupyter notebook](https://github.com/BGU-CS-VIL/dtan/blob/pytorch/notebooks/Usage%20Example%20-%20Running%20with%20and%20without%20prior.ipynb), illustrating the importance of the smoothness prior. 
 
 3. **UCR Nearest Centroid Classification (NCC)**:
 *Coming soon to PyTorch version*<br>
