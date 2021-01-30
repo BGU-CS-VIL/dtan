@@ -55,8 +55,21 @@ python UCR_alignment.py
 ```
 ## Usage
 ### Examples
-Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
-1. **UCR time-series classification archive [3] alignment example.** <br>
+1. To initialize the model:
+
+```python
+from DTAN.DTAN_layer import DTAN as dtan_model
+
+# Init model to GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = dtan_model(signal_len=int, channels=int, tess=[int,], n_recurrence=int,
+                    zero_boundary=bool, device='gpu').to(device)
+```
+
+
+Under the 'examples' dir you can find example scripts for training and running DTAN time-series joint alignment. 
+
+2. **UCR time-series classification archive [3] alignment example.** <br>
 To run simply enter:
 ```
 python UCR_alignment.py
@@ -89,8 +102,8 @@ optional arguments:
 
 ```
 
-2. **Usage Example - Running with and without smoothness prior**
-See the jupyter notebook, illustrating the importance of the smoothness prior. 
+2. **Usage Example - Running with and without smoothness prior**:<br>
+See the [jupyter notebook](https://github.com/BGU-CS-VIL/dtan/blob/pytorch/notebooks/Usage%20Example%20-%20Running%20with%20and%20without%20prior.ipynb), illustrating the importance of the smoothness prior. 
 
 3. **UCR Nearest Centroid Classification (NCC)**:
 *Coming soon to PyTorch version*<br>
