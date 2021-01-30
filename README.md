@@ -1,5 +1,5 @@
-# Diffeomorphic Temporal Alignment Nets - PyTorch (BETA!)
-Repository for our <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment Nets](https://www.cs.bgu.ac.il/~orenfr/DTAN/ShapiraWeber_NeurIPS_2019.pdf) co-authored by: Ron Shapira Weber, Matan Eyal, Nicki Skafte Detlefsen, Oren Shriki and Oren Freifeld.
+# Diffeomorphic Temporal Alignment Nets
+Repository for our <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment Nets](https://www.cs.bgu.ac.il/~orenfr/DTAN/ShapiraWeber_NeurIPS_2019.pdf) co-authored by: Ron Shapira Weber, Matan Eyal, Nicki Skafte Detlefsen, Oren Shriki and Oren Freifeld. 
 <img src="/figures/dtan_intro_fig.png" alt="DTAN joint alignmnet of ECGFiveDays dataset.">
 ## Model Architecture
 <img src="/figures/DTAN_detailed_model.png" alt="DTAN Architecture.">
@@ -8,42 +8,42 @@ Repository for our <b>NeurIPS 2019</b> paper, [Diffeomorphic Temporal Alignment 
 Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 
 ## Requirements
-- Standard Python(>=3.6) packages: numpy, matplotlib, tqdm, seaborn
-- PyTorch >= 1.4
-- tslean == 0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
-- libcpab == 2.0
-- For Nvidia GPU iimplementation: CUDA==11.0 + appropriate cuDNN as well. You can follow the instructions [here](https://pytorch.org/get-started/locally/).
+- Standard Python(3.6) packages: numpy, matplotlib, scipy
+- tensorflow==1.11 (keras should be included)
+- tslean==0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
+- libcpab==1.4
+- For Nvidia GPU iimplementation: CUDA==9.0 + appropriate cuDNN as well as tensorflow-gpu. You can follow the instructions [here](https://www.tensorflow.org/install).
 
-## Operation system: 
-For the native PyTorch implementation (slower), we support all operating system. 
-For the fast CUDA implementation of libcpab, we only support Linux.
+Operation system: we currenly only support Linux oprating system.
 
 ## Installation
 We recommend installing a [virtual environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands) via Anaconda.
 For instance:
 ```
-conda create -n dtan python=3.7 numpy matplotlib seaborn tqdm
+conda create -n dtan python=3.6 numpy matplotlib scipy
 ```
 ### libcpab
 licpab [2] is a python package supporting the CPAB transformations [1] in Numpy, Tensorflow and Pytorch.
 
-Install [libcpab](https://github.com/SkafteNicki/libcpab) <br>
+Install [libcpab]:(https://github.com/SkafteNicki/libcpab) <br>
 Note 1: you might have to recompile the dynamic libraries under /libcpab/tensorflow/ <br>
+Note 2: We currently supprot the 1.4v branch (check out the new PyTorch branch, which suports the latest version of libcpab).
 ```
 git clone https://github.com/SkafteNicki/libcpab
+git checkout version1.4
 ```
 Add libcpab to your python path:
 ```
 export PYTHONPATH=$PYTHONPATH:$YOUR_FOLDER_PATH/libcpab
 ```
-Make sure libcpab was installed properly (Run one of the demos).
-
+Make sure libcpab was installed properly. Run one of the demos:
+```
+python tensorflow_demo1.py
+```
 ### DTAN
 Clone the repository:
 ```
 git clone https://github.com/BGU-CS-VIL/dtan.git
-# move to pytorch branch
-git checkout pytorch
 ```
 Add DTAN to your python path:
 ```
@@ -55,21 +55,8 @@ python UCR_alignment.py
 ```
 ## Usage
 ### Examples
-1. To initialize the model:
-
-```python
-from DTAN.DTAN_layer import DTAN as dtan_model
-
-# Init model to GPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = dtan_model(signal_len=int, channels=int, tess=[int,], n_recurrence=int,
-                    zero_boundary=bool, device='gpu').to(device)
-```
-
-
-Under the 'examples' dir you can find example scripts for training and running DTAN time-series joint alignment. 
-
-2. **UCR time-series classification archive [3] alignment example.** <br>
+Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
+1. UCR time-series classification archive [3] alignment example.
 To run simply enter:
 ```
 python UCR_alignment.py
@@ -95,20 +82,18 @@ optional arguments:
                         number of recurrences of R-DTAN
   --zero_boundary ZERO_BOUNDARY
                         zero boundary constrain
-  --n_epochs N_EPOCHS   number of epochs
-  --batch_size BATCH_SIZE
-                        batch size
-  --lr LR               learning rate
 
 ```
+2. Standard alignment trainnig procedure in Keras:
 
-2. **Usage Example - Running with and without smoothness prior**:<br>
-See the [jupyter notebook](https://github.com/BGU-CS-VIL/dtan/blob/pytorch/notebooks/Usage%20Example%20-%20Running%20with%20and%20without%20prior.ipynb), illustrating the importance of the smoothness prior. 
+A simple DL training framework for training DTAN (and R-DTAN) for time-series joint alignment in Keras.
+```
+/models/train_model.py
+```
+3. UCR Nearest Centroid Classification (NCC):
 
-3. **UCR Nearest Centroid Classification (NCC)**:
-*Coming soon to PyTorch version*<br>
 Here we provide an end-to-end pipeline for the NCC experiment described in our paper.
-The script uses the same hyper-parameters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
+The script uses the same hyper-paramters (i.e., lambda_var, lambda_smooth, n_recurrences) used in the paper, depending on the UCR dataset. 
 To run the pipeline on the 'ECGFiveDays' dataset go to the 'examples' dir and simply run: 
 
 ```
@@ -141,8 +126,9 @@ month={July},
 note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
 }
 ```
-## Versions:
-
+## Known Bugs
+- model.save() currenlty does not work (i.e., saving the trained model weights). <br>
+**Fixed in the PyTorch branch of this repo.**
 
 ## License
 This software is released under the MIT License (included with the software). Note, however, that if you are using this code (and/or the results of running it) to support any form of publication (e.g., a book, a journal paper, a conference paper, a patent application, etc.) then we request you will cite our paper:
