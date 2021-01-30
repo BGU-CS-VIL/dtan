@@ -55,8 +55,16 @@ python UCR_alignment.py
 ```
 ## Usage
 ### Examples
-Under the 'examples' dir you can find example scripts for running DTAN time-series joint alignment. 
-1. **UCR time-series classification archive [3] alignment example.** <br>
+To initialize the model:
+```
+from DTAN.DTAN_layer import DTAN as dtan_model
+model = dtan_model(signal_len=int signal length, channels=int, tess=[int,], n_recurrence=int,
+                    zero_boundary=DTANargs.zero_boundary, device='gpu').to(device)
+```
+
+
+Under the 'examples' dir you can find example scripts for training and running DTAN time-series joint alignment. 
+2. **UCR time-series classification archive [3] alignment example.** <br>
 To run simply enter:
 ```
 python UCR_alignment.py
