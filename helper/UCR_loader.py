@@ -19,12 +19,13 @@ def load_txt_file(datadir, dataset):
     Loads UCR text format
     returns numpy array
     '''
+    fdir = os.path.join(datadir, dataset)
+    assert os.path.isdir(fdir), f"{fdir}. {dataset} could not be found in {datadir}"
+    # again, for file names
+    f_name = os.path.join(fdir, dataset)
 
-    assert os.path.isdir(datadir+"/"+dataset), f"{dataset} could not be found in {datadir}"
-    fdir = datadir + '/' + dataset + '/' + dataset
-
-    data_train = np.loadtxt(fdir+'_TRAIN',delimiter=',')
-    data_test_val = np.loadtxt(fdir+'_TEST',delimiter=',')
+    data_train = np.loadtxt(f_name+'_TRAIN',delimiter=',')
+    data_test_val = np.loadtxt(f_name+'_TEST',delimiter=',')
 
     # get data
     X_train = data_train[:,1:]

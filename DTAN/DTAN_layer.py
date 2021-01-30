@@ -34,11 +34,11 @@ class DTAN(nn.Module):
     '''
     PyTroch nn.Module implementation of Diffeomorphic Temporal Alignment Nets [1]
     '''
-    def __init__(self, input_shape, channels, tess=[6,], n_recurrence=1, zero_boundary=True, device='gpu'):
+    def __init__(self, signal_len, channels, tess=[6, ], n_recurrence=1, zero_boundary=True, device='gpu'):
         '''
 
         Args:
-            input_shape (int): signal length
+            signal_len (int): signal length
             channels (int): number of channels
             tess (list): tessellation shape.
             n_recurrence (int): Number of recurrences for R-DTAN. Increasing the number of recurrences
@@ -53,7 +53,7 @@ class DTAN(nn.Module):
         self.T = Cpab(tess, backend='pytorch', device=device, zero_boundary=zero_boundary, volume_perservation=False)
         self.dim = self.T.get_theta_dim()
         self.n_recurrence = n_recurrence
-        self.input_shape = input_shape # signal len
+        self.input_shape = signal_len # signal len
         self.channels = channels
         self.localization = get_locnet()
         self.fc_input_dim = self.get_conv_to_fc_dim()

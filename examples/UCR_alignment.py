@@ -76,7 +76,7 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
     print(args)
 
     # Data
-    datadir = "data/"
+    datadir = "data"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     exp_name = f"{dataset_name}_exp"
     # Plotting flag
