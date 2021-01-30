@@ -55,15 +55,20 @@ python UCR_alignment.py
 ```
 ## Usage
 ### Examples
-To initialize the model:
-```
+1. To initialize the model:
+
+```python
 from DTAN.DTAN_layer import DTAN as dtan_model
-model = dtan_model(signal_len=int signal length, channels=int, tess=[int,], n_recurrence=int,
-                    zero_boundary=DTANargs.zero_boundary, device='gpu').to(device)
+
+# Init model to GPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = dtan_model(signal_len=int, channels=int, tess=[int,], n_recurrence=int,
+                    zero_boundary=bool, device='gpu').to(device)
 ```
 
 
 Under the 'examples' dir you can find example scripts for training and running DTAN time-series joint alignment. 
+
 2. **UCR time-series classification archive [3] alignment example.** <br>
 To run simply enter:
 ```
