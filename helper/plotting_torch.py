@@ -1,10 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import torch
 import seaborn as sns
 from helper.UCR_loader import processed_UCR_data
-
 
 
 def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, dataset_name, N=10):
