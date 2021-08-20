@@ -18,7 +18,7 @@ Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 - For Nvidia GPU iimplementation: CUDA==11.0 + appropriate cuDNN as well. You can follow the instructions [here](https://pytorch.org/get-started/locally/).
 
 ## Operation system: 
-For the native PyTorch implementation (slower), we support all operating system. 
+For the native PyTorch implementation (slower), we support all operating systems. 
 For the fast CUDA implementation of libcpab, we only support Linux.
 
 ## Installation
