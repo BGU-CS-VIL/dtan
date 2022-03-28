@@ -1,6 +1,7 @@
 # Don't track content of these folders
 
 checkpoints/
+*.pkl
 # Pycharm #
 ###################
 *.pyc

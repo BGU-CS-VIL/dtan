@@ -5,7 +5,7 @@ author: ronsha
 """
 import torch
 import torch.nn as nn
-from libcpab import Cpab
+from .libcpab import Cpab
 
 
 def get_locnet():
