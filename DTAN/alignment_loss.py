@@ -23,20 +23,18 @@ def alignment_loss(X_trasformed, labels, thetas, n_channels, DTANargs):
             # Single channel variance across samples
             loss += X_within_class.var(dim=0, unbiased=False).mean()
         else:
-            # variance between signalls in each channel (dim=0)
-            # mean over each channel (dim=1)
-            per_channel_loss = X_within_class.var(dim=0, unbiased=False).mean(dim=1)
+            # variance between signals in each channel (dim=1)
+            # mean variance of all channels and samples (dim=0)
+            per_channel_loss = X_within_class.var(dim=1, unbiased=False).mean(dim=0)
             per_channel_loss = per_channel_loss.mean()
             loss += per_channel_loss
 
     loss /= len(n_classes)
-    #print("\nDEBUG Alignment loss:", loss.item())
+    # Note: for multi-channel data, assues same transformation (i.e., theta) for all channels
     if DTANargs.smoothness_prior:
         for theta in thetas:
             # alignment loss takes over variance loss
             # larger penalty when k increases -> coarse to fine
-            # TODO not tested with several channels
             prior_loss += 0.1*smoothness_norm(DTANargs.T, theta, DTANargs.lambda_smooth, DTANargs.lambda_var, print_info=False)
         loss += prior_loss
-        #print("DEBUG Prior loss:", prior_loss.item())
     return loss

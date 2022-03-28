@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import torch
 import seaborn as sns
 from helper.UCR_loader import processed_UCR_data
+from tslearn.datasets import UCR_UEA_datasets
 
 
 def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, dataset_name, N=10):
@@ -43,12 +44,13 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
     title_font = 18
     rows = 2
     cols = 2
-    plot_idx = 1
     # plot each channel
     for channel in range(n_channels):
+        plot_idx = 1
         t = range(input_shape[1])
         # Misaligned Signals
-        ax1 = f.add_subplot(rows, cols, plot_idx)
+        if channel == 0:
+            ax1 = f.add_subplot(rows, cols, plot_idx)
         ax1.plot(X_within_class[:, channel,:].T)
         plt.tight_layout()
         plt.xlim(0, signal_len)
@@ -61,10 +63,15 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         plot_idx += 1
 
         # Misaligned Mean
-        ax2 = f.add_subplot(rows, cols, plot_idx)
-        ax2.plot(t, X_mean[channel], 'r',label='Average signal')
-        ax2.fill_between(t, upper[channel], lower[channel], color='r', alpha=0.2, label=r"$\pm\sigma$")
-        #plt.legend(loc='upper right', fontsize=12, frameon=True)
+        if channel == 0:
+            ax2 = f.add_subplot(rows, cols, plot_idx)
+        if n_channels == 1:
+            ax2.plot(t, X_mean[channel], 'r',label=f'Average signal-channel:{channel}')
+            ax2.fill_between(t, upper[channel], lower[channel], color='r', alpha=0.2, label=r"$\pm\sigma$")
+        else:
+            ax2.plot(t, X_mean[channel,:], label=f'Average signal-channel:{channel}')
+
+        plt.legend(loc='upper right', fontsize=12, frameon=True)
         plt.xlim(0, signal_len)
 
         if n_channels ==1:
@@ -76,7 +83,8 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
 
 
         # Aligned signals
-        ax3 = f.add_subplot(rows, cols, plot_idx)
+        if channel == 0:
+            ax3 = f.add_subplot(rows, cols, plot_idx)
         ax3.plot(X_aligned_within_class[:, channel,:].T)
         plt.title("DTAN aligned signals", fontsize=title_font)
         plt.xlim(0, signal_len)
@@ -84,17 +92,18 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         plot_idx += 1
 
         # Aligned Mean
-        ax4 = f.add_subplot(rows, cols, plot_idx)
+        if channel == 0:
+            ax4 = f.add_subplot(rows, cols, plot_idx)
         # plot transformed signal
-        ax4.plot(t, X_mean_t[channel,:], label='Average signal')
-        ax4.fill_between(t, upper_t[channel], lower_t[channel], color='#539caf', alpha=0.6, label=r"$\pm\sigma$")
+        ax4.plot(t, X_mean_t[channel,:], label=f'Average signal-channel:{channel}')
+        if n_channels == 1:
+            ax4.fill_between(t, upper_t[channel], lower_t[channel], color='#539caf', alpha=0.6, label=r"$\pm\sigma$")
 
 
-        #plt.legend(loc='upper right', fontsize=12, frameon=True)
+        plt.legend(loc='upper right', fontsize=12, frameon=True)
         plt.title("DTAN average signal", fontsize=title_font)
         plt.xlim(0, signal_len)
         plt.tight_layout()
-
         plot_idx += 1
 
     #plt.savefig(f'{dataset_name}_{int(class_num)}.pdf', format='pdf')
@@ -110,7 +119,8 @@ def plot_signals(model, device, datadir, dataset_name):
 
     with torch.no_grad():
         # Torch channels first
-        X_train, X_test, y_train, y_test = processed_UCR_data(datadir, dataset_name)
+        X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
+        X_train, X_test, y_train, y_test = processed_UCR_data(X_train, X_test, y_train, y_test)
         data =[X_train, X_test]
         labels = [y_train, y_test]
         set_names = ["train", "test"]

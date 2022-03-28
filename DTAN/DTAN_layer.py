@@ -8,10 +8,10 @@ import torch.nn as nn
 from .libcpab import Cpab
 
 
-def get_locnet():
+def get_locnet(channels):
     # Spatial transformer localization-network
     locnet = nn.Sequential(
-        nn.Conv1d(1, 128, kernel_size=7),
+        nn.Conv1d(channels, 128, kernel_size=7),
         # nn.BatchNorm1d(128),
         nn.MaxPool1d(3, stride=2),
         nn.ReLU(True),
@@ -55,7 +55,7 @@ class DTAN(nn.Module):
         self.n_recurrence = n_recurrence
         self.input_shape = signal_len # signal len
         self.channels = channels
-        self.localization = get_locnet()
+        self.localization = get_locnet(channels)
         self.fc_input_dim = self.get_conv_to_fc_dim()
 
         # Regressor for the 3 * 2 affine matrix

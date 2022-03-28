@@ -2,6 +2,7 @@
 
 checkpoints/
 *.pkl
+*.pth
 # Pycharm #
 ###################
 *.pyc

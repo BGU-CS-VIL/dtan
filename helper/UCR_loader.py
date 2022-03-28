@@ -11,13 +11,14 @@ from helper.util import get_dataset_info
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
+from tslearn.datasets import UCR_UEA_datasets
 import numpy as np
 import os
 
 def load_txt_file(datadir, dataset):
     '''
-    Loads UCR text format
-    returns numpy array
+    Loads UCR text format - useful when working with the data provided by the UCR archivce site. 
+    returns numpy array [N_samples,Width,Channels]
     '''
     fdir = os.path.join(datadir, dataset)
     assert os.path.isdir(fdir), f"{fdir}. {dataset} could not be found in {datadir}"
@@ -79,24 +80,24 @@ def get_train_and_validation_loaders(dataloader, validation_split=0.1, batch_siz
     return train_loader, validation_loader
 
 
-def processed_UCR_data(datadir, dataset):
+def processed_UCR_data(X_train, X_test, y_train, y_test):
     '''
-    Loads UCR txt files are returns numpy array.
+    process tslearn UCR datasets for pytorch.
     Fixes negative labels and make sure labels are not 1-hot.
     Adds channel dim when necessary
     Args:
-        datadir: location of data files
-        dataset: name of the dataset under parent dir 'datadir'
+        X_train, X_test, y_train, y_test: numpy arrays 
+         X: [N_samples, Width, Channels]
+         y: [N_samples]
 
     Returns:
         numpy array - X_train, X_test, y_train, y_test
     '''
-    # load data in numpy format
-    X_train, X_test, y_train, y_test = load_txt_file(datadir, dataset)
-    # add a thrid channel for univariate data
+
+    # add a third channel for univariate data
     if len(X_train.shape) < 3:
-        X_train = np.expand_dims(X_train, -1)
-        X_test = np.expand_dims(X_test, -1)
+        X_train = np.expand_dims(X_train, 1)
+        X_test = np.expand_dims(X_test, 1)
 
     # Fix labels (some UCR datasets have negative labels)
     class_names = np.unique(y_train, axis=0)
@@ -117,7 +118,7 @@ def processed_UCR_data(datadir, dataset):
     return X_train, X_test, y_train, y_test
 
 
-def get_UCR_data(datadir, dataset_name, batch_size=32):
+def get_UCR_data(dataset_name, batch_size=32):
     '''
 
     Args:
@@ -129,7 +130,9 @@ def get_UCR_data(datadir, dataset_name, batch_size=32):
 
     '''
 
-    X_train, X_test, y_train, y_test = processed_UCR_data(datadir, dataset_name)
+    X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
+    X_train, X_test, y_train, y_test = processed_UCR_data(X_train, X_test, y_train, y_test)
+
     input_shape, n_classes = get_dataset_info(dataset_name, X_train, X_test, y_train, y_test, print_info=True)
 
     train_dataloader = np_to_dataloader(X_train, y_train, batch_size, shuffle=True)

@@ -36,6 +36,7 @@ from models.train_model import train
 
 def argparser():
     parser = argparse.ArgumentParser(description='Process args')
+    parser.add_argument('--dataset', type=str, default='ECGFiveDays')
     parser.add_argument('--tess_size', type=int, default=16,
                         help="CPA velocity field partition")
     parser.add_argument('--smoothness_prior', default=True,
@@ -99,8 +100,7 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
     expManager[exp_name].add_DTAN_arg(DTANargs1)
 
     DTANargs = Experiment.get_DTAN_args()
-    train_loader, validation_loader, test_loader = get_UCR_data(datadir,
-                                                                dataset_name=dataset_name,
+    train_loader, validation_loader, test_loader = get_UCR_data(dataset_name=dataset_name,
                                                                 batch_size=Experiment.batch_size)
 
 
@@ -116,7 +116,7 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
 
 if __name__ == "__main__":
     args = argparser()
-    run_UCR_alignment(args)
+    run_UCR_alignment(args, dataset_name=args.dataset)
 
 
 

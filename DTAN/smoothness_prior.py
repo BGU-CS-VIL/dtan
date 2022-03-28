@@ -99,7 +99,6 @@ def smoothness_norm(T, theta, lambda_smooth=0.5, lambda_var=0.1, print_info=Fals
     items_to_plot["Theta values for: theta with prior"] = theta_T
 
     # Calculate smoothness norm
-    theta = torch.squeeze(theta)
     theta_T = torch.transpose(theta, 0, 1)
     smooth_norm = torch.matmul(theta, torch.matmul(precision_theta, theta_T))
     smooth_norm = torch.mean(smooth_norm)
