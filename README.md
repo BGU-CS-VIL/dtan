@@ -13,7 +13,7 @@ Ron Shapira Weber (email: ronsha@post.bgu.ac.il)
 ## Requirements
 - Standard Python(>=3.6) packages: numpy, matplotlib, tqdm, seaborn
 - PyTorch >= 1.4
-- tslean == 0.1.19 (requires for DTW based methods - SoftDTW, DBA and NCC)
+- tslean == 0.5.2
 - libcpab == 2.0
 - For Nvidia GPU iimplementation: CUDA==11.0 + appropriate cuDNN as well. You can follow the instructions [here](https://pytorch.org/get-started/locally/).
 
@@ -29,6 +29,9 @@ conda create -n dtan python=3.7 numpy matplotlib seaborn tqdm
 ```
 ### libcpab
 licpab [2] is a python package supporting the CPAB transformations [1] in Numpy, Tensorflow and Pytorch.
+For your convince, we have added a lightweight version of libcpab at DTAN/libcpab. 
+
+That being said, you are still encouraged to install the full package. 
 
 Install [libcpab](https://github.com/SkafteNicki/libcpab) <br>
 Note 1: you might have to recompile the dynamic libraries under /libcpab/tensorflow/ <br>
@@ -73,18 +76,21 @@ model = dtan_model(signal_len=int, channels=int, tess=[int,], n_recurrence=int,
 Under the 'examples' dir you can find example scripts for training and running DTAN time-series joint alignment. 
 
 2. **UCR time-series classification archive [3] alignment example.** <br>
-To run simply enter:
+To run, simply enter (from the examples dir):
 ```
 python UCR_alignment.py
 ```
-Note that here we only provide one dataset from the UCR archive - ECGFiveDays. 
-For the entire archive, please visit:
+We support loading data via [tslearn](https://tslearn.readthedocs.io/en/stable/index.html) [4]. 
+
+For more information regarding the UCR archive, please visit:
 [https://www.cs.ucr.edu/~eamonn/time_series_data/](https://www.cs.ucr.edu/~eamonn/time_series_data/)
 
 The script supports the following flags:
 ```
 optional arguments:
   -h, --help            show this help message and exit
+  --dataset UCR dataset name
+                        string. Dataset name to load from tslearn.datasets.UCR_UEA_datasets
   --tess_size TESS_SIZE
                         CPA velocity field partition
   --smoothness_prior    smoothness prior flag
@@ -142,6 +148,19 @@ author={ Chen, Yanping and Keogh, Eamonn and Hu, Bing and Begum, Nurjahan and Ba
 year={2015},
 month={July},
 note = {\url{www.cs.ucr.edu/~eamonn/time_series_data/}}
+}
+[4] @article{JMLR:v21:20-091,
+  author  = {Romain Tavenard and Johann Faouzi and Gilles Vandewiele and
+             Felix Divo and Guillaume Androz and Chester Holtz and
+             Marie Payne and Roman Yurchak and Marc Ru{\ss}wurm and
+             Kushal Kolar and Eli Woods},
+  title   = {Tslearn, A Machine Learning Toolkit for Time Series Data},
+  journal = {Journal of Machine Learning Research},
+  year    = {2020},
+  volume  = {21},
+  number  = {118},
+  pages   = {1-6},
+  url     = {http://jmlr.org/papers/v21/20-091.html}
 }
 ```
 ## Versions:
