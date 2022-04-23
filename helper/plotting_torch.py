@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import seaborn as sns
-from helper.UCR_loader import processed_UCR_data
+from helper.UCR_loader import processed_UCR_data, load_txt_file
 from tslearn.datasets import UCR_UEA_datasets
 
 
@@ -119,7 +119,10 @@ def plot_signals(model, device, datadir, dataset_name):
 
     with torch.no_grad():
         # Torch channels first
-        X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
+        if (datadir):
+          X_train, X_test, y_train, y_test = load_txt_file(datadir, dataset_name)
+        else:
+          X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
         X_train, X_test, y_train, y_test = processed_UCR_data(X_train, X_test, y_train, y_test)
         data =[X_train, X_test]
         labels = [y_train, y_test]
