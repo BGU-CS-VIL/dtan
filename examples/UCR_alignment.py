@@ -57,7 +57,7 @@ def argparser():
                         help="batch size")
     parser.add_argument('--lr', type=float, default=0.0001,
                         help="learning rate")
-    parser.add_argument('--dpath', type=str, default="data", help="dataset dir path, default examples/data")
+    parser.add_argument('--dpath', type=str, default="", help="dataset dir path, default examples/data")
     args = parser.parse_args()
     return args
 
