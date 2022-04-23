@@ -57,6 +57,7 @@ def argparser():
                         help="batch size")
     parser.add_argument('--lr', type=float, default=0.0001,
                         help="learning rate")
+    parser.add_argument('--dpath', type=str, default="data", help="dataset dir path, default examples/data")
     args = parser.parse_args()
     return args
 
@@ -77,7 +78,7 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
     print(args)
 
     # Data
-    datadir = "data"
+    datadir = args.dpath #"data/UCR/UCR_TS_Archive_2015"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     exp_name = f"{dataset_name}_exp"
     # Plotting flag
@@ -101,6 +102,7 @@ def run_UCR_alignment(args, dataset_name="ECGFiveDays"):
 
     DTANargs = Experiment.get_DTAN_args()
     train_loader, validation_loader, test_loader = get_UCR_data(dataset_name=dataset_name,
+                                                                datadir=datadir,
                                                                 batch_size=Experiment.batch_size)
 
 
