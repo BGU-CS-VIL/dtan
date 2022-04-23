@@ -106,7 +106,7 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         plt.tight_layout()
         plot_idx += 1
 
-    #plt.savefig(f'{dataset_name}_{int(class_num)}.pdf', format='pdf')
+    plt.savefig(f'{int(class_num)}_{dataset_name}.pdf', format='pdf')
 
     plt.suptitle(f"{dataset_name}: class-{class_num}", fontsize=title_font+2)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
