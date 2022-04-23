@@ -96,8 +96,8 @@ def processed_UCR_data(X_train, X_test, y_train, y_test):
 
     # add a third channel for univariate data
     if len(X_train.shape) < 3:
-        X_train = np.expand_dims(X_train, 1)
-        X_test = np.expand_dims(X_test, 1)
+        X_train = np.expand_dims(X_train, -1)
+        X_test = np.expand_dims(X_test, -1)
 
     # Fix labels (some UCR datasets have negative labels)
     class_names = np.unique(y_train, axis=0)
