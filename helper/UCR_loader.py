@@ -96,8 +96,8 @@ def processed_UCR_data(X_train, X_test, y_train, y_test):
 
     # add a third channel for univariate data
     if len(X_train.shape) < 3:
-        X_train = np.expand_dims(X_train, 1)
-        X_test = np.expand_dims(X_test, 1)
+        X_train = np.expand_dims(X_train, -1)
+        X_test = np.expand_dims(X_test, -1)
 
     # Fix labels (some UCR datasets have negative labels)
     class_names = np.unique(y_train, axis=0)
@@ -118,19 +118,22 @@ def processed_UCR_data(X_train, X_test, y_train, y_test):
     return X_train, X_test, y_train, y_test
 
 
-def get_UCR_data(dataset_name, batch_size=32):
+def get_UCR_data(dataset_name, datadir=0, batch_size=32):
     '''
 
     Args:
-        datadir (str): location of data files
         dataset_name (str): name of the dataset under parent dir 'datadir'
+        datadir (str): location of data files
         batch_size (int): batchsize for torch dataloaders
 
     Returns:
 
     '''
 
-    X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
+    if (datadir):
+      X_train, X_test, y_train, y_test = load_txt_file(datadir, dataset_name)
+    else:
+      X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
     X_train, X_test, y_train, y_test = processed_UCR_data(X_train, X_test, y_train, y_test)
 
     input_shape, n_classes = get_dataset_info(dataset_name, X_train, X_test, y_train, y_test, print_info=True)

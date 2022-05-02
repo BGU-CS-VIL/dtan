@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import seaborn as sns
-from helper.UCR_loader import processed_UCR_data
+from helper.UCR_loader import processed_UCR_data, load_txt_file
 from tslearn.datasets import UCR_UEA_datasets
 
 
@@ -106,7 +106,7 @@ def plot_mean_signal(X_aligned_within_class, X_within_class, ratio, class_num, d
         plt.tight_layout()
         plot_idx += 1
 
-    #plt.savefig(f'{dataset_name}_{int(class_num)}.pdf', format='pdf')
+    plt.savefig(f'{int(class_num)}_{dataset_name}.pdf', format='pdf')
 
     plt.suptitle(f"{dataset_name}: class-{class_num}", fontsize=title_font+2)
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
@@ -119,7 +119,10 @@ def plot_signals(model, device, datadir, dataset_name):
 
     with torch.no_grad():
         # Torch channels first
-        X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
+        if (datadir):
+          X_train, X_test, y_train, y_test = load_txt_file(datadir, dataset_name)
+        else:
+          X_train, y_train, X_test, y_test = UCR_UEA_datasets().load_dataset(dataset_name)
         X_train, X_test, y_train, y_test = processed_UCR_data(X_train, X_test, y_train, y_test)
         data =[X_train, X_test]
         labels = [y_train, y_test]
