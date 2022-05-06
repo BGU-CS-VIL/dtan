@@ -89,7 +89,7 @@ def train_epoch(train_loader, device, optimizer, model, channels, DTANargs):
         loss.backward()
         optimizer.step()
 
-        return loss
+    return loss
 
 
 def validation_epoch(val_loader, device, model, channels, DTANargs):
