@@ -1,3 +1,7 @@
+## While this repo is the official implementation of Diffeomorphic Temporal Alignment Nets (DTAN), the method from our NeurIPS 2019 paper, we strongly encourage you to use the (much better) method from our ICML 2023 paper, [Regularization-free Diffeomorphic Temporal Alignment Nets](https://github.com/BGU-CS-VIL/RF-DTAN) (RF-DTAN). 
+For one thing, RF-DTAN will save you the need to do hyper-parameter tuning, as it requires no regularization over the predicted transformations. 
+
+
 # Diffeomorphic Temporal Alignment Nets
 ## We moved to PyTorch! 
 TensorFlow implementation (old master branch) is available at tf_legacy branch.
